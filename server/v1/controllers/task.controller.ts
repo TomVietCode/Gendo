@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import Task from "../models/task.model"
 import Pagination from "../../helpers/pagination.helper"
 
+// [GET] /api/v1/task
 export const index = async (req: Request, res: Response) => {
   interface Find {
     deleted: boolean
@@ -61,13 +62,42 @@ export const index = async (req: Request, res: Response) => {
   })
 }
 
+// [GET] /api/v1/task/detail/:id
 export const detail = async (req: Request, res: Response) => {
   const id: string = req.params.id
 
-  const taskDetail = await Task.find({
+  const taskDetail = await Task.findOne({
     _id: id,
     deleted: false,
   })
 
-  res.json(taskDetail)
+  if(req.query.members) {
+    res.json({
+      code: 200,
+      members: taskDetail.listUser
+    })
+    return
+  }
+
+  res.json({
+    code: 200,
+    detail: taskDetail
+  })
+}
+
+// [PATCH] /api/v1/task/change-status/:id
+export const changeStatus = async (req: Request, res: Response) => {
+  const id: string = req.params.id
+  const status: string = req.params.status
+
+  await Task.updateOne({
+    _id: id
+  }, {
+    status: status
+  })
+
+  res.json({
+    code: 200,
+    message: "Cập nhật thành công",
+  })
 }
