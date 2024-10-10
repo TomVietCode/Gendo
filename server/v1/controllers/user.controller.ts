@@ -211,8 +211,9 @@ export const userList = async (req: Request, res: Response) => {
   let users = []
 
   if (req.query.keyword) {
-    const keyword = new RegExp(req.query.keyword, "i")
-    users = await User.find({ fullname: keyword })
+    const keyword: RegExp = new RegExp(`${req.query.keyword}`, "i")
+
+    users = await User.find({ fullName: keyword })
       .select("id fullname email")
       .limit(7)
   }

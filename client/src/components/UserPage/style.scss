@@ -1,0 +1,10 @@
+.user-profile {
+  text-align: center; // Căn giữa nội dung
+  .ant-avatar {
+    border: 2px solid #1890ff; // Đường viền cho avatar
+  }
+  p {
+    margin: 8px 0; // Cách đều giữa các đoạn
+    font-size: 16px; // Kích thước chữ
+  }
+}

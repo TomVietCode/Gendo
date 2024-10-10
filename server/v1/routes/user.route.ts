@@ -12,12 +12,16 @@ router.post("/password/forgot", controller.forgotPass)
 
 router.post("/password/otp", controller.otpAuth)
 
-router.post("/password/reset", authMiddleware.requireAuth ,controller.resetPassword)
+router.post(
+  "/password/reset",
+  authMiddleware.requireAuth,
+  controller.resetPassword
+)
 
-router.get("/profile", controller.profile)
+router.get("/profile", authMiddleware.requireAuth, controller.profile)
 
-router.patch("/edit", controller.editProfile)
+router.patch("/edit", authMiddleware.requireAuth, controller.editProfile)
 
-router.get("/list", controller.userList)
+router.get("/list", authMiddleware.requireAuth, controller.userList)
 
 export const userRoute = router
