@@ -172,3 +172,53 @@ export const resetPassword = async (req: Request, res: Response) => {
   })
 }
 
+// [GET] /api/v1/user/profile
+export const profile = async (req: Request, res: Response) => {
+  res.json({
+    code: 200,
+    info: res.locals.user,
+  })
+}
+
+// [PATCH] /api/v1/user/edit
+export const editProfile = async (req: Request, res: Response) => {
+  try {
+    await User.updateOne(
+      {
+        _id: res.locals.user.id,
+      },
+      req.body
+    )
+
+    const user = await User.findOne({ _id: res.locals.user.id }).select(
+      "-password token"
+    )
+    res.json({
+      code: 200,
+      message: "Updated profile successfully!",
+      user: user,
+    })
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Updated profile failed!",
+    })
+  }
+}
+
+// [GET] /api/v1/user/list
+export const userList = async (req: Request, res: Response) => {
+  let users = []
+
+  if (req.query.keyword) {
+    const keyword = new RegExp(req.query.keyword, "i")
+    users = await User.find({ fullname: keyword })
+      .select("id fullname email")
+      .limit(7)
+  }
+
+  res.json({
+    code: 200,
+    users: users,
+  })
+}

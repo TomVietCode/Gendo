@@ -14,4 +14,9 @@ router.post("/password/otp", controller.otpAuth)
 
 router.post("/password/reset", authMiddleware.requireAuth ,controller.resetPassword)
 
+router.get("/profile", controller.profile)
+
+router.patch("/edit", controller.editProfile)
+
+router.get("/list", controller.userList)
 export const userRoute = router
