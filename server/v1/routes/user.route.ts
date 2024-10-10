@@ -19,4 +19,5 @@ router.get("/profile", controller.profile)
 router.patch("/edit", controller.editProfile)
 
 router.get("/list", controller.userList)
+
 export const userRoute = router
