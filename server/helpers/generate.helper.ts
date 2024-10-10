@@ -13,7 +13,7 @@ export const generateRandomNumber = (length: number): string => {
   var result = ""
 
   for (let i = 0; i < length; i++) {
-    result += nums.charAt(Math.floor(Math.random() * Number.length));
+    result += nums.charAt(Math.floor(Math.random() * nums.length));
   }
 
   return result

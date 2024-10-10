@@ -1,13 +1,18 @@
-import { Request, Response } from "express";
-import User from "../models/user.model";
+import { Request, Response } from "express"
+import User from "../models/user.model"
 import md5 from "md5"
-import { generateRandomString } from './../../helpers/generate.helper';
+import {
+  generateRandomNumber,
+  generateRandomString,
+} from "./../../helpers/generate.helper"
+import Otp from "../models/otp.model"
+import { sendMail } from "../../helpers/sendMail.hepler"
 
 interface User {
   _id?: string
-  fullName: string,
-  email: string,
-  password: string,
+  fullName: string
+  email: string
+  password: string
   token: string
 }
 
@@ -18,10 +23,10 @@ export const register = async (req: Request, res: Response) => {
   const fullName: string = req.body.fullName
 
   const isEmailExist = await User.findOne({
-    email: email
+    email: email,
   })
 
-  if(isEmailExist) {
+  if (isEmailExist) {
     res.json({
       code: 400,
     })
@@ -32,7 +37,7 @@ export const register = async (req: Request, res: Response) => {
     fullName: fullName,
     email: email,
     password: md5(password),
-    token: generateRandomString(20)
+    token: generateRandomString(20),
   }
 
   const savedUser = await User.create(newUser)
@@ -40,7 +45,7 @@ export const register = async (req: Request, res: Response) => {
   res.json({
     code: 400,
     token: savedUser.token,
-    id: savedUser._id
+    id: savedUser._id,
   })
 }
 
@@ -48,19 +53,19 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
   const existUser = await User.findOne({
-    email: email
+    email: email,
   })
 
-  if(!existUser) {
+  if (!existUser) {
     res.json({
-      code: 400
+      code: 400,
     })
     return
   }
 
-  if(md5(password) !== existUser.password){
+  if (md5(password) !== existUser.password) {
     res.json({
-      code: 400
+      code: 400,
     })
     return
   }
@@ -72,3 +77,98 @@ export const login = async (req: Request, res: Response) => {
     id: existUser._id,
   })
 }
+
+// [POST] /api/v1/user/password/forgot
+export const forgotPass = async (req: Request, res: Response) => {
+  const email = req.body.email
+  const otp = generateRandomNumber(6)
+
+  const existUser = await User.findOne({
+    email: email,
+  })
+
+  if (existUser) {
+    const objectOtp = new Otp({
+      email: email,
+      otp: otp,
+      expireAt: Date.now() + 5 * 60 * 1000,
+    })
+
+    await objectOtp.save()
+
+    const subject = "Mã xác nhận OTP"
+    const html = `
+    <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+      <div style="margin:50px auto;width:70%;padding:20px 0">
+          <div style="border-bottom:1px solid #eee">
+              <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">GENDO</a>
+          </div>
+          <p style="font-size:1.1em">Xin chào ${existUser.fullName},</p>
+          <p>Dưới đây là mã OTP xác thực để đổi mật khẩu. Vui lòng không chia sẻ cho bất kỳ ai. Mã OTP có hiệu lực trong 5 phút!</p>
+          <h2
+              style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">
+              ${objectOtp.otp}</h2>
+          <p style="font-size:0.9em;">Trân trọng,<br />CELLO</p>
+          <hr style="border:none;border-top:1px solid #eee" />`
+
+    await sendMail(email, subject, html)
+
+    res.json({
+      code: 200,
+      message: "OTP code has been sent to your email!",
+    })
+  } else {
+    res.json({
+      code: 400,
+      message: "Email does not exist in our system!",
+    })
+  }
+}
+
+// [POST] /api/v1/user/password/otp
+export const otpAuth = async (req: Request, res: Response) => {
+  const email: string = req.body.email
+  const otp: string = req.body.otp
+
+  const existOtp = await Otp.findOne({
+    email: email,
+    otp: otp,
+  })
+
+  if (existOtp) {
+    const user = await User.findOne({
+      email: email,
+    })
+
+    res.json({
+      code: 200,
+      token: user.token,
+    })
+  } else {
+    res.json({
+      code: 400,
+      message: "OTP code is not correct!",
+    })
+  }
+}
+
+// [POST] /api/v1/user/password/reset
+export const resetPassword = async (req: Request, res: Response) => {
+  const token: string = res.locals.user.token
+  const newPassword: string = req.body.password
+
+  await User.updateOne(
+    {
+      token: token,
+    },
+    {
+      password: md5(newPassword),
+    }
+  )
+
+  res.json({
+    code: 200,
+    message: "Reset password successfully!",
+  })
+}
+
