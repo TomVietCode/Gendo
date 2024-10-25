@@ -43,7 +43,6 @@ function Home() {
   useEffect(() => {
     const fetchApi = async () => {
       const result = await get(token, "task/statistic/status");
-      console.log(result)
       setData(result.map((item) => ({ type: item.status, value: item.value })));
     };
     fetchApi();
