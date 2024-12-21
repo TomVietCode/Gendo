@@ -35,10 +35,10 @@ function Register() {
     e.preventDefault()
     const err = checkValidate(data)
 
-    if (err.email || err.fullname || err.password || err.confirmPw) {
+    if (err.email || err.fullName || err.password || err.confirmPw) {
       setErrForm({
         email: err.email,
-        fullname: err.fullname,
+        fullName: err.fullName,
         password: err.password,
         confirmPw: err.confirmPw,
       })
@@ -65,19 +65,19 @@ function Register() {
           <div className="register__input-group">
             <div className="form-floating">
               <input
-                name="fullname"
+                name="fullName"
                 type="text"
                 className={`register__form-group-input form-control ${
-                  errForm.fullname ? "border-danger" : ""
+                  errForm.fullName ? "border-danger" : ""
                 }`}
-                id="floatingfullname"
+                id="floatingfullName"
                 placeholder="Enter your full name"
                 onChange={handleChangeInput}
               />
-              <label htmlFor="floatingfullname">Full Name</label>
-              {errForm.fullname && (
+              <label htmlFor="floatingfullName">Full Name</label>
+              {errForm.fullName && (
                 <small className="text-danger">
-                  {errForm.fullname}
+                  {errForm.fullName}
                 </small>
               )}
             </div>
