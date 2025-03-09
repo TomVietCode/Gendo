@@ -14,7 +14,7 @@ function TypeEmail() {
 
   const handleSendEmail = async (value) => {
     setEmail(value)
-    const result = await postPublic("user/password/forgotpass", value)
+    const result = await postPublic("user/password/forgot", value)
     if (result.code === 400) {
       notification.error({
         message: result.message,

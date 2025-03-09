@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
-import User from "../models/user.model"
+import User from "../models/userModel"
 import md5 from "md5"
 import {
   generateRandomNumber,
   generateRandomString,
-} from "./../../helpers/generate.helper"
+} from "../../helpers/generate.helper"
 import Otp from "../models/otp.model"
 import { sendMail } from "../../helpers/sendMail.hepler"
 
@@ -190,9 +190,7 @@ export const editProfile = async (req: Request, res: Response) => {
       req.body
     )
 
-    const user = await User.findOne({ _id: res.locals.user.id }).select(
-      "-password token"
-    )
+    const user = await User.findOne({ _id: res.locals.user.id })
     res.json({
       code: 200,
       message: "Updated profile successfully!",
@@ -200,6 +198,7 @@ export const editProfile = async (req: Request, res: Response) => {
     })
   } catch (error) {
     res.json({
+      error: error.message,
       code: 400,
       message: "Updated profile failed!",
     })

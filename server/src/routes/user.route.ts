@@ -12,7 +12,7 @@ router.post("/password/forgot", controller.forgotPass)
 
 router.post("/password/otp", controller.otpAuth)
 
-router.post(
+router.patch(
   "/password/reset",
   authMiddleware.requireAuth,
   controller.resetPassword

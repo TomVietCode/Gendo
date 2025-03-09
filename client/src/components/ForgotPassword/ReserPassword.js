@@ -6,7 +6,7 @@ const ResetPasswordModal = ({ visible, onClose, token }) => {
   const [form] = Form.useForm()
 
   const handleSubmit = async (value) => {
-    const result = await patch(token, "user/password/reset-password", {
+    const result = await patch(token, "user/password/reset", {
       password: value.password,
     })
     if(result.code === 200){

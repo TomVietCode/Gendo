@@ -1,5 +1,5 @@
 import { ParsedQs } from "qs"
-import Task from "../v1/models/task.model"
+import Task from "../src/models/taskModel"
 
 const Pagination = async (query, id: string) => {
   const paginationObject: any = {

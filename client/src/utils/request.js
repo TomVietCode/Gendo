@@ -1,4 +1,4 @@
-const API_DOMAIN= "https://gendo-be.vercel.app/api/v1/"
+const API_DOMAIN= "http://localhost:5000/api/v1/"
 
 export const get = async (token, path) => {
   const response = await fetch(API_DOMAIN + path, {

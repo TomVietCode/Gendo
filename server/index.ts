@@ -4,7 +4,7 @@ dotenv.config()
 import bodyParser from "body-parser";
 import cors from "cors"
 import { connectDb } from "./config/database";
-import indexRouter from "./v1/routes/index.route";
+import indexRouter from "./src/routes/index.route";
 const app: Express = express()
 const port: string = process.env.PORT
 

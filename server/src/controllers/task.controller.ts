@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import Task from "../models/task.model"
+import Task from "../models/taskModel"
 import Pagination from "../../helpers/pagination.helper"
 
 interface Task {
